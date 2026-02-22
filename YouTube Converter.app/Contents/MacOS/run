@@ -1,0 +1,20 @@
+#!/bin/bash
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+RESOURCES_DIR="$( dirname "$SCRIPT_DIR" )/Resources"
+
+PYTHON_PATHS="/opt/homebrew/bin/python3 /usr/local/bin/python3 /usr/bin/python3"
+
+PYTHON=""
+for p in $PYTHON_PATHS; do
+    if [ -x "$p" ]; then
+        PYTHON="$p"
+        break
+    fi
+done
+
+if [ -z "$PYTHON" ]; then
+    osascript -e 'display dialog "Python 3 is required but not installed.\n\nPlease install Python 3 from python.org or via Homebrew:\nbrew install python3" buttons {"OK"} default button "OK" with icon stop'
+    exit 1
+fi
+
+exec "$PYTHON" "$RESOURCES_DIR/youtube_to_wav.py"
