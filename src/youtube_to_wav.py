@@ -167,8 +167,8 @@ class App(ctk.CTk):
         super().__init__()
         
         self.title("YouTube Converter")
-        self.geometry("520x580")
-        self.minsize(420, 500)
+        self.geometry("520x700")
+        self.minsize(420, 600)
         self.configure(fg_color=COLORS["bg"])
         
         self.success_popup = None
