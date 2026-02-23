@@ -1,17 +1,19 @@
-# YouTube Converter For all Platforms
+# YouTube Converter For All Platforms
 
 A simple, native application to download and convert YouTube videos to various audio and video formats.
 
 ## Features
 
-- Convert to multiple formats: **MP3**, **M4A**, **WAV**, **MP4**
-- Quality selection for each format:
-  - MP3/M4A: 128, 192, 256, 320 kbps
-  - WAV: Lossless (16-bit, 24-bit)
-  - MP4: 360p, 480p, 720p, 1080p, 1440p, 4K
-- Automatic dependency installation
-- Native dark theme UI
-- No ads, no tracking
+- **Multi-format conversion**: MP3, M4A, WAV, MP4
+- **Quality options**:
+  - Audio: 128, 192, 256, 320 kbps (MP3/M4A)
+  - Lossless: 16-bit, 24-bit (WAV)
+  - Video: 360p, 480p, 720p, 1080p, 1440p, 4K (MP4)
+- **Automatic dependency installation** - yt-dlp, ffmpeg, customtkinter
+- **In-app updates** - Check for app updates and dependency updates
+- **Native dark theme UI** - Clean, modern interface
+- **Cross-platform** - Windows, macOS, Linux
+- **No ads, no tracking**
 
 ## Installation
 
@@ -44,8 +46,8 @@ A simple, native application to download and convert YouTube videos to various a
 
 ```bash
 # Clone the repository
-git clone https://github.com/aaf2tbz/Youtube-To-Audio-Converter-for-Mac.git
-cd Youtube-To-Audio-Converter-for-Mac
+git clone https://github.com/aaf2tbz/Youtube-Converter-Application.git
+cd Youtube-Converter-Application
 
 # Make build script executable
 chmod +x build_linux.sh
@@ -78,8 +80,8 @@ python3 src/youtube_to_wav.py
 3. **Select Format** - Choose from MP3, M4A, WAV, or MP4
 4. **Select Quality** - Pick your preferred quality level
 5. **Click Download & Convert** - Choose where to save the file
-
-The app will automatically install `yt-dlp` and `ffmpeg` if they're missing.
+6. **Check for Updates** - Use the built-in update checker to get the latest version
+7. **Update Dependencies** - Keep yt-dlp, ffmpeg, and customtkinter up to date
 
 ## Bypassing Security Checks (macOS)
 
@@ -98,19 +100,80 @@ If macOS shows a security warning when opening the app ("Apple couldn't verify t
 
 This is a one-time step. After bypassing, the app will launch normally.
 
+## Building from Source
+
+### Prerequisites
+
+- Python 3.8+
+- Homebrew (macOS) or equivalent package manager
+
+### Build Steps
+
+```bash
+# Clone the repository
+git clone https://github.com/aaf2tbz/Youtube-Converter-Application.git
+cd Youtube-Converter-Application
+
+# Install dependencies
+pip3 install customtkinter pyinstaller
+
+# Build for current platform
+pyinstaller --onefile --name "YouTubeConverter" --console src/youtube_to_wav.py
+
+# Output will be in dist/ folder
+```
+
+### Building for Other Platforms
+
+- **Windows**: Use Wine + PyInstaller (see build scripts in repo)
+- **macOS**: Use PyInstaller on macOS
+- **Linux**: Use PyInstaller on Linux
+
 ## Dependencies
 
 The app requires:
 - **yt-dlp** - For downloading YouTube content
 - **ffmpeg** - For audio/video conversion
+- **customtkinter** - For the GUI
 
-These are automatically installed when you click "Install Dependencies" in the app.
+These are automatically installed when you click "Install Dependencies" or "Update Dependencies" in the app.
+
+## Project Structure
+
+```
+Youtube-Converter-Application/
+├── src/
+│   └── youtube_to_wav.py      # Main application source
+├── releases/
+│   ├── YouTubeConverter.exe  # Windows executable
+│   └── YouTubeConverter.dmg # macOS installer
+├── build_linux.sh            # Linux build script
+├── requirements.txt          # Python dependencies
+└── README.md                 # This file
+```
+
+## Troubleshooting
+
+### "Python not found" error
+- Install Python from python.org or via Homebrew: `brew install python3`
+
+### "yt-dlp not found" error
+- Click "Install Dependencies" in the app, or manually install:
+  - macOS: `brew install yt-dlp ffmpeg`
+  - Linux: `sudo apt install yt-dlp ffmpeg`
+
+### App won't open (macOS)
+- See [Bypassing Security Checks](#bypassing-security-checks-macos) above
+
+### Download fails
+- Make sure yt-dlp is installed and up to date
+- Try clicking "Update Dependencies" to get the latest version
 
 ## Technical Details
 
 - Built with Python 3 and customtkinter
-- Uses `yt-dlp` for downloading
-- Uses `ffmpeg` for conversion
+- Uses yt-dlp for downloading
+- Uses ffmpeg for conversion
 - Packaged as native executables for each platform
 
 ## License
