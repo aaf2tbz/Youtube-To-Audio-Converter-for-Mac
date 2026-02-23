@@ -15,6 +15,28 @@ BREW_PATH = f"{HOMEBREW_BIN}/brew"
 
 DEPS: dict[str, bool | None] = {"yt-dlp": None, "ffmpeg": None, "customtkinter": None}
 
+COLORS = {
+    "bg": "#1a1a2e",
+    "card": "#16213e",
+    "accent": "#e94560",
+    "accent_hover": "#ff6b6b",
+    "success": "#0f3460",
+    "text": "#eaeaea",
+    "text_muted": "#a0a0a0",
+    "input_bg": "#0f0f23",
+    "border": "#2d2d5a"
+}
+
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("dark-blue")
+
+QUALITY_OPTIONS = {
+    "mp3": ["128 kbps", "192 kbps", "256 kbps", "320 kbps"],
+    "m4a": ["128 kbps", "192 kbps", "256 kbps", "320 kbps"],
+    "wav": ["Lossless (16-bit)", "Lossless (24-bit)"],
+    "mp4": ["360p", "480p", "720p", "1080p", "1440p", "2160p (4K)"]
+}
+
 def check_dependency(name):
     if name == "yt-dlp":
         return os.path.exists(YTDLP_PATH)
