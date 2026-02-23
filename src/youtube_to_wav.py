@@ -167,8 +167,8 @@ class App(ctk.CTk):
         super().__init__()
         
         self.title("YouTube Converter")
-        self.geometry("520x700")
-        self.minsize(420, 600)
+        self.geometry("520x750")
+        self.minsize(450, 650)
         self.configure(fg_color=COLORS["bg"])
         
         self.success_popup = None
@@ -405,10 +405,11 @@ class App(ctk.CTk):
             btn_row,
             text="Check for Updates",
             font=("SF Pro Display", 12),
-            fg_color=COLORS["secondary"],
-            hover_color=COLORS["muted"],
+            fg_color=COLORS["primary"],
+            hover_color=COLORS["primary_hover"],
+            text_color=COLORS["primary_foreground"],
             corner_radius=8,
-            height=36,
+            height=40,
             command=self.check_updates
         )
         self.check_update_btn.grid(row=0, column=0, padx=(0, 6), sticky="ew")
@@ -417,10 +418,11 @@ class App(ctk.CTk):
             btn_row,
             text="Update Dependencies",
             font=("SF Pro Display", 12),
-            fg_color=COLORS["secondary"],
-            hover_color=COLORS["muted"],
+            fg_color=COLORS["primary"],
+            hover_color=COLORS["primary_hover"],
+            text_color=COLORS["primary_foreground"],
             corner_radius=8,
-            height=36,
+            height=40,
             command=self.update_dependencies
         )
         self.update_deps_btn.grid(row=0, column=1, padx=(6, 0), sticky="ew")
