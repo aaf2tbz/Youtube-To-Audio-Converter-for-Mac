@@ -16,15 +16,27 @@ BREW_PATH = f"{HOMEBREW_BIN}/brew"
 DEPS: dict[str, bool | None] = {"yt-dlp": None, "ffmpeg": None, "customtkinter": None}
 
 COLORS = {
-    "bg": "#1a1a2e",
-    "card": "#16213e",
-    "accent": "#e94560",
-    "accent_hover": "#ff6b6b",
-    "success": "#0f3460",
-    "text": "#eaeaea",
+    "bg": "#2d2d2d",
+    "card": "#333333",
+    "card_foreground": "#404040",
+    "primary": "#6366f1",
+    "primary_hover": "#818cf8",
+    "primary_foreground": "#ffffff",
+    "secondary": "#404040",
+    "secondary_foreground": "#f0f0f0",
+    "muted": "#3d3d3d",
+    "muted_foreground": "#a0a0a0",
+    "accent": "#4a4a4a",
+    "accent_foreground": "#f0f0f0",
+    "destructive": "#ef4444",
+    "destructive_foreground": "#ffffff",
+    "border": "#484848",
+    "input": "#404040",
+    "ring": "#818cf8",
+    "success": "#22c55e",
+    "text": "#f0f0f0",
     "text_muted": "#a0a0a0",
-    "input_bg": "#0f0f23",
-    "border": "#2d2d5a"
+    "foreground": "#f0f0f0"
 }
 
 ctk.set_appearance_mode("dark")
@@ -150,8 +162,8 @@ class App(ctk.CTk):
             self.deps_frame,
             text="Install",
             font=("SF Pro Display", 12, "bold"),
-            fg_color=COLORS["accent"],
-            hover_color=COLORS["accent_hover"],
+            fg_color=COLORS["primary"],
+            hover_color=COLORS["primary_hover"],
             corner_radius=8,
             width=90,
             height=32,
@@ -181,7 +193,7 @@ class App(ctk.CTk):
             input_card,
             placeholder_text="https://youtube.com/watch?v=...",
             font=("SF Pro Display", 13),
-            fg_color=COLORS["input_bg"],
+            fg_color=COLORS["input"],
             border_color=COLORS["border"],
             corner_radius=8,
             height=40,
@@ -203,7 +215,7 @@ class App(ctk.CTk):
             input_card,
             placeholder_text="my_song",
             font=("SF Pro Display", 13),
-            fg_color=COLORS["input_bg"],
+            fg_color=COLORS["input"],
             border_color=COLORS["border"],
             corner_radius=8,
             height=40,
@@ -237,10 +249,10 @@ class App(ctk.CTk):
             values=["mp3", "m4a", "wav", "mp4"],
             font=("SF Pro Display", 12),
             dropdown_font=("SF Pro Display", 12),
-            fg_color=COLORS["input_bg"],
+            fg_color=COLORS["input"],
             border_color=COLORS["border"],
-            button_color=COLORS["accent"],
-            button_hover_color=COLORS["accent_hover"],
+            button_color=COLORS["primary"],
+            button_hover_color=COLORS["primary_hover"],
             dropdown_fg_color=COLORS["card"],
             corner_radius=8,
             height=32,
@@ -264,10 +276,10 @@ class App(ctk.CTk):
             values=QUALITY_OPTIONS["mp3"],
             font=("SF Pro Display", 12),
             dropdown_font=("SF Pro Display", 12),
-            fg_color=COLORS["input_bg"],
+            fg_color=COLORS["input"],
             border_color=COLORS["border"],
-            button_color=COLORS["accent"],
-            button_hover_color=COLORS["accent_hover"],
+            button_color=COLORS["primary"],
+            button_hover_color=COLORS["primary_hover"],
             dropdown_fg_color=COLORS["card"],
             corner_radius=8,
             height=32,
@@ -280,8 +292,8 @@ class App(ctk.CTk):
             self,
             text="Download & Convert",
             font=("SF Pro Display", 16, "bold"),
-            fg_color=COLORS["accent"],
-            hover_color=COLORS["accent_hover"],
+            fg_color=COLORS["primary"],
+            hover_color=COLORS["primary_hover"],
             corner_radius=12,
             height=56,
             command=self.download_and_convert
@@ -311,7 +323,7 @@ class App(ctk.CTk):
         
         if url and name and DEPS["yt-dlp"] and DEPS["ffmpeg"]:
             self.download_btn.configure(
-                fg_color=COLORS["accent"],
+                fg_color=COLORS["primary"],
                 state="normal"
             )
         else:
@@ -386,8 +398,8 @@ class App(ctk.CTk):
             self.success_popup,
             text="Done",
             font=("SF Pro Display", 13, "bold"),
-            fg_color=COLORS["accent"],
-            hover_color=COLORS["accent_hover"],
+            fg_color=COLORS["primary"],
+            hover_color=COLORS["primary_hover"],
             corner_radius=8,
             width=100,
             command=self.success_popup.destroy
