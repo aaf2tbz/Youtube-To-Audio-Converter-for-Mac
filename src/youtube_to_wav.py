@@ -3,6 +3,8 @@ import subprocess
 import sys
 import os
 import threading
+import json
+import urllib.request
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
@@ -12,6 +14,10 @@ HOMEBREW_BIN = "/opt/homebrew/bin"
 YTDLP_PATH = f"{HOMEBREW_BIN}/yt-dlp"
 FFMPEG_PATH = f"{HOMEBREW_BIN}/ffmpeg"
 BREW_PATH = f"{HOMEBREW_BIN}/brew"
+
+GITHUB_REPO = "aaf2tbz/Youtube-Converter-Application"
+GITHUB_RAW_URL = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/src/youtube_to_wav.py"
+CURRENT_VERSION = "1.0.0"
 
 DEPS: dict[str, bool | None] = {"yt-dlp": None, "ffmpeg": None, "customtkinter": None}
 
@@ -108,6 +114,53 @@ def install_deps(callback=None):
     thread = threading.Thread(target=run_install, daemon=True)
     thread.start()
     return thread
+
+def get_latest_version():
+    try:
+        api_url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+        req = urllib.request.Request(api_url, headers={"User-Agent": "YouTubeConverter"})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read())
+            return data.get("tag_name", "v1.0.0").replace("v", "")
+    except Exception:
+        return None
+
+def check_for_updates():
+    latest_version = get_latest_version()
+    if latest_version:
+        try:
+            current = tuple(map(int, CURRENT_VERSION.split(".")))
+            latest = tuple(map(int, latest_version.split(".")))
+            return latest > current
+        except:
+            return False
+    return False
+
+def get_dependency_versions():
+    versions = {}
+    try:
+        result = subprocess.run([YTDLP_PATH, "--version"], capture_output=True, text=True)
+        versions["yt-dlp"] = result.stdout.strip() if result.returncode == 0 else "Not installed"
+    except:
+        versions["yt-dlp"] = "Not installed"
+    
+    try:
+        result = subprocess.run([FFMPEG_PATH, "-version"], capture_output=True, text=True)
+        if result.returncode == 0:
+            first_line = result.stdout.split("\n")[0]
+            versions["ffmpeg"] = first_line.split(" ")[2] if len(first_line.split(" ")) > 2 else "Unknown"
+        else:
+            versions["ffmpeg"] = "Not installed"
+    except:
+        versions["ffmpeg"] = "Not installed"
+    
+    try:
+        import customtkinter
+        versions["customtkinter"] = customtkinter.__version__
+    except:
+        versions["customtkinter"] = "Not installed"
+    
+    return versions
 
 class App(ctk.CTk):
     def __init__(self):
@@ -308,6 +361,70 @@ class App(ctk.CTk):
         )
         self.status_label.pack(pady=(0, 12))
         
+        self.update_frame = ctk.CTkFrame(
+            self,
+            fg_color=COLORS["card"],
+            corner_radius=12,
+            border_width=1,
+            border_color=COLORS["border"]
+        )
+        self.update_frame.pack(fill="x", padx=20, pady=(0, 12))
+        
+        update_title = ctk.CTkLabel(
+            self.update_frame,
+            text="Updates",
+            font=("SF Pro Display", 12, "bold"),
+            text_color=COLORS["text"]
+        )
+        update_title.pack(pady=(12, 4), padx=16, anchor="w")
+        
+        self.update_status = ctk.CTkLabel(
+            self.update_frame,
+            text="Click 'Check for Updates' to check",
+            font=("SF Pro Display", 11),
+            text_color=COLORS["text_muted"]
+        )
+        self.update_status.pack(pady=(0, 8), padx=16, anchor="w")
+        
+        dep_versions = get_dependency_versions()
+        versions_text = f"yt-dlp: {dep_versions.get('yt-dlp', 'N/A')} | ffmpeg: {dep_versions.get('ffmpeg', 'N/A')} | customtkinter: {dep_versions.get('customtkinter', 'N/A')}"
+        self.dep_versions_label = ctk.CTkLabel(
+            self.update_frame,
+            text=versions_text,
+            font=("SF Pro Display", 10),
+            text_color=COLORS["text_muted"]
+        )
+        self.dep_versions_label.pack(pady=(0, 12), padx=16, anchor="w")
+        
+        btn_row = ctk.CTkFrame(self.update_frame, fg_color="transparent")
+        btn_row.pack(pady=(0, 12), padx=16, fill="x")
+        btn_row.columnconfigure(0, weight=1)
+        btn_row.columnconfigure(1, weight=1)
+        
+        self.check_update_btn = ctk.CTkButton(
+            btn_row,
+            text="Check for Updates",
+            font=("SF Pro Display", 12),
+            fg_color=COLORS["secondary"],
+            hover_color=COLORS["muted"],
+            corner_radius=8,
+            height=36,
+            command=self.check_updates
+        )
+        self.check_update_btn.grid(row=0, column=0, padx=(0, 6), sticky="ew")
+        
+        self.update_deps_btn = ctk.CTkButton(
+            btn_row,
+            text="Update Dependencies",
+            font=("SF Pro Display", 12),
+            fg_color=COLORS["secondary"],
+            hover_color=COLORS["muted"],
+            corner_radius=8,
+            height=36,
+            command=self.update_dependencies
+        )
+        self.update_deps_btn.grid(row=0, column=1, padx=(6, 0), sticky="ew")
+        
         self.update_button_state()
     
     def update_quality_options(self, event=None):
@@ -364,6 +481,71 @@ class App(ctk.CTk):
             self.after(0, self.update_deps_status)
         
         install_deps(on_complete)
+    
+    def check_updates(self):
+        self.check_update_btn.configure(state="disabled", text="Checking...")
+        self.update_status.configure(text="Checking for updates...", text_color="#fbbf24")
+        
+        def do_check():
+            has_update = check_for_updates()
+            dep_versions = get_dependency_versions()
+            
+            self.after(0, lambda: self.check_update_btn.configure(state="normal", text="Check for Updates"))
+            
+            if has_update:
+                self.after(0, lambda: self.update_status.configure(
+                    text=f"New version available! Current: {CURRENT_VERSION}",
+                    text_color="#fbbf24"
+                ))
+            else:
+                self.after(0, lambda: self.update_status.configure(
+                    text=f"You're up to date (v{CURRENT_VERSION})",
+                    text_color="#4ade80"
+                ))
+            
+            versions_text = f"yt-dlp: {dep_versions.get('yt-dlp', 'N/A')} | ffmpeg: {dep_versions.get('ffmpeg', 'N/A')} | customtkinter: {dep_versions.get('customtkinter', 'N/A')}"
+            self.after(0, lambda: self.dep_versions_label.configure(text=versions_text))
+        
+        threading.Thread(target=do_check, daemon=True).start()
+    
+    def update_dependencies(self):
+        self.update_deps_btn.configure(state="disabled", text="Updating...")
+        self.update_status.configure(text="Updating dependencies...", text_color="#fbbf25")
+        
+        def do_update():
+            missing = [k for k, v in DEPS.items() if not v]
+            
+            if not missing:
+                self.after(0, lambda: self.update_status.configure(text="Reinstalling dependencies...", text_color="#fbbf25"))
+            
+            has_brew = os.path.exists(BREW_PATH)
+            deps_to_update = ["yt-dlp", "ffmpeg", "customtkinter"]
+            
+            for dep in deps_to_update:
+                try:
+                    if dep == "customtkinter":
+                        cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "--break-system-packages", dep]
+                    elif has_brew:
+                        cmd = [BREW_PATH, "upgrade", dep]
+                    else:
+                        continue
+                    subprocess.run(cmd, capture_output=True, check=False)
+                except:
+                    pass
+            
+            dep_versions = get_dependency_versions()
+            
+            self.after(0, lambda: self.update_deps_btn.configure(state="normal", text="Update Dependencies"))
+            self.after(0, lambda: self.update_status.configure(
+                text="Dependencies updated!",
+                text_color="#4ade80"
+            ))
+            
+            versions_text = f"yt-dlp: {dep_versions.get('yt-dlp', 'N/A')} | ffmpeg: {dep_versions.get('ffmpeg', 'N/A')} | customtkinter: {dep_versions.get('customtkinter', 'N/A')}"
+            self.after(0, lambda: self.dep_versions_label.configure(text=versions_text))
+            self.after(0, self.update_deps_status)
+        
+        threading.Thread(target=do_update, daemon=True).start()
     
     def show_success(self, filepath):
         if self.success_popup:
