@@ -396,13 +396,8 @@ class App(ctk.CTk):
         )
         self.dep_versions_label.pack(pady=(0, 12), padx=16, anchor="w")
         
-        btn_row = ctk.CTkFrame(self.update_frame, fg_color="transparent")
-        btn_row.pack(pady=(0, 12), padx=16, fill="x")
-        btn_row.columnconfigure(0, weight=1)
-        btn_row.columnconfigure(1, weight=1)
-        
         self.check_update_btn = ctk.CTkButton(
-            btn_row,
+            self.update_frame,
             text="Check for Updates",
             font=("SF Pro Display", 12),
             fg_color=COLORS["primary"],
@@ -410,12 +405,13 @@ class App(ctk.CTk):
             text_color=COLORS["primary_foreground"],
             corner_radius=8,
             height=40,
+            width=180,
             command=self.check_updates
         )
-        self.check_update_btn.grid(row=0, column=0, padx=(0, 6), sticky="ew")
+        self.check_update_btn.pack(pady=(0, 12), padx=16, side="left")
         
         self.update_deps_btn = ctk.CTkButton(
-            btn_row,
+            self.update_frame,
             text="Update Dependencies",
             font=("SF Pro Display", 12),
             fg_color=COLORS["primary"],
@@ -423,9 +419,10 @@ class App(ctk.CTk):
             text_color=COLORS["primary_foreground"],
             corner_radius=8,
             height=40,
+            width=180,
             command=self.update_dependencies
         )
-        self.update_deps_btn.grid(row=0, column=1, padx=(6, 0), sticky="ew")
+        self.update_deps_btn.pack(pady=(0, 12), padx=(8, 16), side="left")
         
         self.update_button_state()
     
