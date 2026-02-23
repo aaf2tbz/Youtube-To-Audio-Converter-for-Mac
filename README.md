@@ -29,12 +29,14 @@ A simple, native application to download and convert YouTube videos to various a
 2. Open the DMG file
 3. Drag "YouTube Converter" to the Applications folder
 4. Launch from Applications
+5. **If you see a security warning**, see [Bypassing Security Checks](#bypassing-security-checks-macos) below
 
 #### Option 2: Run .app Bundle
 
 1. Download `YouTube Converter.app` from the [releases](releases/) folder
 2. Move to Applications folder
 3. Launch the app
+4. **If you see a security warning**, see [Bypassing Security Checks](#bypassing-security-checks-macos) below
 
 ### Linux
 
@@ -78,6 +80,23 @@ python3 src/youtube_to_wav.py
 5. **Click Download & Convert** - Choose where to save the file
 
 The app will automatically install `yt-dlp` and `ffmpeg` if they're missing.
+
+## Bypassing Security Checks (macOS)
+
+If macOS shows a security warning when opening the app ("Apple couldn't verify this app is free of malware"):
+
+**Method 1: Right-click to open**
+1. Right-click on the app in Applications
+2. Select "Open"
+3. Click "Open" in the dialog box
+
+**Method 2: Allow in System Settings**
+1. Try to open the app - you'll see a warning dialog
+2. Go to **System Settings** > **Privacy & Security**
+3. Scroll down to the "Security" section
+4. Click "Open Anyway" next to the warning about the app
+
+This is a one-time step. After bypassing, the app will launch normally.
 
 ## Dependencies
 
