@@ -13,39 +13,25 @@ YTDLP_PATH = f"{HOMEBREW_BIN}/yt-dlp"
 FFMPEG_PATH = f"{HOMEBREW_BIN}/ffmpeg"
 BREW_PATH = f"{HOMEBREW_BIN}/brew"
 
-DEPS: dict[str, bool | None] = {"yt-dlp": None, "ffmpeg": None}
-
-QUALITY_OPTIONS = {
-    "mp3": ["128 kbps", "192 kbps", "256 kbps", "320 kbps"],
-    "m4a": ["128 kbps", "192 kbps", "256 kbps", "320 kbps"],
-    "wav": ["Lossless (16-bit)", "Lossless (24-bit)"],
-    "mp4": ["360p", "480p", "720p", "1080p", "1440p", "2160p (4K)"]
-}
-
-COLORS = {
-    "bg": "#1a1a2e",
-    "card": "#16213e",
-    "accent": "#e94560",
-    "accent_hover": "#ff6b6b",
-    "success": "#0f3460",
-    "text": "#eaeaea",
-    "text_muted": "#a0a0a0",
-    "input_bg": "#0f0f23",
-    "border": "#2d2d5a"
-}
-
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("dark-blue")
+DEPS: dict[str, bool | None] = {"yt-dlp": None, "ffmpeg": None, "customtkinter": None}
 
 def check_dependency(name):
     if name == "yt-dlp":
         return os.path.exists(YTDLP_PATH)
-    else:
+    elif name == "ffmpeg":
         return os.path.exists(FFMPEG_PATH)
+    elif name == "customtkinter":
+        try:
+            import customtkinter
+            return True
+        except ImportError:
+            return False
+    return False
 
 def check_all_deps():
     DEPS["yt-dlp"] = check_dependency("yt-dlp")
     DEPS["ffmpeg"] = check_dependency("ffmpeg")
+    DEPS["customtkinter"] = check_dependency("customtkinter")
     return all(DEPS.values())
 
 def install_deps(callback=None):
@@ -60,7 +46,9 @@ def install_deps(callback=None):
         
         for dep in missing:
             try:
-                if has_brew:
+                if dep == "customtkinter":
+                    cmd = [sys.executable, "-m", "pip", "install", "--break-system-packages", dep]
+                elif has_brew:
                     cmd = [BREW_PATH, "install", dep]
                 elif dep == "yt-dlp":
                     cmd = [sys.executable, "-m", "pip", "install", "yt-dlp"]
