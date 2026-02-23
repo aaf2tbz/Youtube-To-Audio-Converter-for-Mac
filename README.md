@@ -1,6 +1,6 @@
-# YouTube Converter for Mac
+# YouTube Converter For all Platforms (except mobile)
 
-A simple, native macOS application to download and convert YouTube videos to various audio and video formats.
+A simple, native application to download and convert YouTube videos to various audio and video formats.
 
 ## Features
 
@@ -16,6 +16,8 @@ A simple, native macOS application to download and convert YouTube videos to var
 ## Requirements
 
 - macOS 10.13 (High Sierra) or later
+- Windows 7 or higher
+- Linux platforms
 - Python 3 (auto-detected)
 - [Homebrew](https://brew.sh) (recommended for dependency installation)
 
