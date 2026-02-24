@@ -6,6 +6,7 @@ import threading
 import json
 import urllib.request
 import re
+import webbrowser
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
@@ -18,7 +19,7 @@ BREW_PATH = f"{HOMEBREW_BIN}/brew"
 
 GITHUB_REPO = "aaf2tbz/Youtube-Converter-Application"
 GITHUB_RAW_URL = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/src/youtube_to_wav.py"
-CURRENT_VERSION = "1.1.0"
+CURRENT_VERSION = "1.1.1"
 
 DEPS: dict[str, bool | None] = {"yt-dlp": None, "ffmpeg": None, "customtkinter": None}
 
@@ -126,6 +127,18 @@ def get_latest_version():
     except Exception:
         return None
 
+def get_latest_release_info():
+    try:
+        api_url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+        req = urllib.request.Request(api_url, headers={"User-Agent": "YouTubeConverter"})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read())
+            version = data.get("tag_name", "v1.0.0").replace("v", "")
+            url = data.get("html_url", f"https://github.com/{GITHUB_REPO}/releases/latest")
+            return version, url
+    except Exception:
+        return None, None
+
 def check_for_updates():
     latest_version = get_latest_version()
     if latest_version:
@@ -173,6 +186,7 @@ class App(ctk.CTk):
         self.configure(fg_color=COLORS["bg"])
         
         self.success_popup = None
+        self.latest_release_url = f"https://github.com/{GITHUB_REPO}/releases/latest"
         
         self._create_widgets()
         self.after(100, self.update_deps_status)
@@ -603,26 +617,57 @@ class App(ctk.CTk):
         self.update_status.configure(text="Checking for updates...", text_color="#fbbf24")
         
         def do_check():
-            has_update = check_for_updates()
+            latest_version, release_url = get_latest_release_info()
+            has_update = False
+            if latest_version:
+                try:
+                    current = tuple(map(int, CURRENT_VERSION.split(".")))
+                    latest = tuple(map(int, latest_version.split(".")))
+                    has_update = latest > current
+                except Exception:
+                    has_update = False
+
+            if release_url:
+                self.latest_release_url = release_url
+
             dep_versions = get_dependency_versions()
-            
-            self.after(0, lambda: self.check_update_btn.configure(state="normal", text="Check for Updates"))
             
             if has_update:
                 self.after(0, lambda: self.update_status.configure(
-                    text=f"New version available! Current: {CURRENT_VERSION}",
+                    text=f"New version available: v{latest_version} (current: v{CURRENT_VERSION})",
                     text_color="#fbbf24"
+                ))
+                self.after(0, lambda: self.check_update_btn.configure(
+                    state="normal",
+                    text="Update Now",
+                    command=self.open_update_page
                 ))
             else:
                 self.after(0, lambda: self.update_status.configure(
                     text=f"You're up to date (v{CURRENT_VERSION})",
                     text_color="#4ade80"
                 ))
+                self.after(0, lambda: self.check_update_btn.configure(
+                    state="normal",
+                    text="Check for Updates",
+                    command=self.check_updates
+                ))
             
             versions_text = f"yt-dlp: {dep_versions.get('yt-dlp', 'N/A')} | ffmpeg: {dep_versions.get('ffmpeg', 'N/A')} | customtkinter: {dep_versions.get('customtkinter', 'N/A')}"
             self.after(0, lambda: self.dep_versions_label.configure(text=versions_text))
         
         threading.Thread(target=do_check, daemon=True).start()
+
+    def open_update_page(self):
+        update_url = self.latest_release_url or f"https://github.com/{GITHUB_REPO}/releases/latest"
+        opened = webbrowser.open(update_url)
+        if opened:
+            self.update_status.configure(
+                text="Opened latest release page in your browser",
+                text_color="#4ade80"
+            )
+        else:
+            self.show_error("Update Error", f"Could not open update page.\n\nOpen this link manually:\n{update_url}")
     
     def update_dependencies(self):
         self.update_deps_btn.configure(state="disabled", text="Updating...")

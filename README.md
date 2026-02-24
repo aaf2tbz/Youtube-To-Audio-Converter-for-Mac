@@ -13,6 +13,7 @@ A simple, native application to download and convert YouTube videos to various a
   - Video: 360p, 480p, 720p, 1080p, 1440p, 4K (MP4)
 - **Automatic dependency installation** - yt-dlp, ffmpeg, customtkinter
 - **In-app updates** - Check for app updates and dependency updates
+- **Update Now action** - When a new app release is found, the check button switches to `Update Now`
 - **Native dark theme UI** - Clean, modern interface
 - **Cross-platform** - Windows, macOS, Linux
 - **No ads, no tracking**
