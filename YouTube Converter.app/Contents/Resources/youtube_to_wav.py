@@ -18,7 +18,7 @@ BREW_PATH = f"{HOMEBREW_BIN}/brew"
 
 GITHUB_REPO = "aaf2tbz/Youtube-Converter-Application"
 GITHUB_RAW_URL = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/src/youtube_to_wav.py"
-CURRENT_VERSION = "1.0.0"
+CURRENT_VERSION = "1.1.0"
 
 DEPS: dict[str, bool | None] = {"yt-dlp": None, "ffmpeg": None, "customtkinter": None}
 
