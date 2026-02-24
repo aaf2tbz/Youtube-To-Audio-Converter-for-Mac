@@ -5,6 +5,8 @@ A simple, native application to download and convert YouTube videos to various a
 ## Features
 
 - **Multi-format conversion**: MP3, M4A, WAV, MP4
+- **Playlist downloads**: Download full YouTube playlists with indexed original titles (`01 - Song Title`)
+- **Playlist progress bar**: Live 0-100% completion for playlist conversions
 - **Quality options**:
   - Audio: 128, 192, 256, 320 kbps (MP3/M4A)
   - Lossless: 16-bit, 24-bit (WAV)
@@ -80,8 +82,9 @@ python3 src/youtube_to_wav.py
 3. **Select Format** - Choose from MP3, M4A, WAV, or MP4
 4. **Select Quality** - Pick your preferred quality level
 5. **Click Download & Convert** - Choose where to save the file
-6. **Check for Updates** - Use the built-in update checker to get the latest version
-7. **Update Dependencies** - Keep yt-dlp, ffmpeg, and customtkinter up to date
+6. **Or click Download Playlist** - Paste playlist URL and download every item with indexed YouTube titles
+7. **Check for Updates** - Use the built-in update checker to get the latest version
+8. **Update Dependencies** - Keep yt-dlp, ffmpeg, and customtkinter up to date
 
 ## Bypassing Security Checks (macOS)
 
